@@ -20,23 +20,26 @@ os.environ.pop(
 
 
 mlflow.set_experiment(
-    "Wine Quality CI Training"
+    "Bike Sharing Prediction"
 )
 
 
+mlflow.autolog()
+
+
 df = pd.read_csv(
-    "winequality-red-preprocessing.csv"
+    "day_preprocessing.csv"
 )
 
 
 X = df.drop(
     columns=[
-        "quality"
+        "cnt"
     ]
 )
 
 y = df[
-    "quality"
+    "cnt"
 ]
 
 
@@ -83,48 +86,9 @@ with mlflow.start_run():
     )
 
 
-    mlflow.log_param(
-        "model",
-        "RandomForestRegressor"
-    )
-
-    mlflow.log_param(
-        "n_estimators",
-        100
-    )
-
-    mlflow.log_param(
-        "random_state",
-        42
-    )
-
-
-    mlflow.log_metric(
-        "rmse",
-        rmse
-    )
-
-    mlflow.log_metric(
-        "mae",
-        mae
-    )
-
-    mlflow.log_metric(
-        "r2_score",
-        r2
-    )
-
-
-    model_path = "model.pkl"
-
     joblib.dump(
         model,
-        model_path
-    )
-
-
-    mlflow.log_artifact(
-        model_path
+        "model.pkl"
     )
 
 
