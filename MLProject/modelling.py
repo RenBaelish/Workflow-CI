@@ -13,31 +13,33 @@ from sklearn.metrics import (
 )
 
 
-# MLflow menggunakan path lokal relatif
-mlflow.set_tracking_uri(
-    "file:./mlruns"
+os.environ.pop(
+    "MLFLOW_TRACKING_URI",
+    None
 )
+
 
 mlflow.set_experiment(
     "Wine Quality CI Training"
 )
 
 
-# Membaca dataset
 df = pd.read_csv(
     "winequality-red-preprocessing.csv"
 )
 
 
-# Memisahkan fitur dan target
 X = df.drop(
-    columns=["quality"]
+    columns=[
+        "quality"
+    ]
 )
 
-y = df["quality"]
+y = df[
+    "quality"
+]
 
 
-# Membagi dataset
 X_train, X_test, y_train, y_test = train_test_split(
     X,
     y,
@@ -48,27 +50,23 @@ X_train, X_test, y_train, y_test = train_test_split(
 
 with mlflow.start_run():
 
-    # Membuat model
     model = RandomForestRegressor(
         n_estimators=100,
         random_state=42
     )
 
 
-    # Training
     model.fit(
         X_train,
         y_train
     )
 
 
-    # Prediksi
     predictions = model.predict(
         X_test
     )
 
 
-    # Evaluasi
     rmse = mean_squared_error(
         y_test,
         predictions
@@ -85,7 +83,6 @@ with mlflow.start_run():
     )
 
 
-    # Logging parameter
     mlflow.log_param(
         "model",
         "RandomForestRegressor"
@@ -96,8 +93,12 @@ with mlflow.start_run():
         100
     )
 
+    mlflow.log_param(
+        "random_state",
+        42
+    )
 
-    # Logging metrics
+
     mlflow.log_metric(
         "rmse",
         rmse
@@ -114,7 +115,6 @@ with mlflow.start_run():
     )
 
 
-    # Simpan model ke file lokal
     model_path = "model.pkl"
 
     joblib.dump(
@@ -123,13 +123,23 @@ with mlflow.start_run():
     )
 
 
-    # Upload model sebagai artifact MLflow
     mlflow.log_artifact(
         model_path
     )
 
 
-    print("Model training completed.")
-    print("RMSE:", rmse)
-    print("MAE:", mae)
-    print("R2 Score:", r2)
+    print(
+        "Model training completed."
+    )
+
+    print(
+        f"RMSE: {rmse}"
+    )
+
+    print(
+        f"MAE: {mae}"
+    )
+
+    print(
+        f"R2 Score: {r2}"
+    )
