@@ -12,6 +12,13 @@ from sklearn.metrics import (
 )
 
 
+# Tracking MLflow menggunakan path relatif
+# Tidak menggunakan path Windows seperti D:\...
+mlflow.set_tracking_uri(
+    "file:./mlruns"
+)
+
+
 mlflow.set_experiment(
     "Wine Quality CI Training"
 )
