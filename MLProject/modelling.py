@@ -1,6 +1,7 @@
+import os
+import joblib
 import pandas as pd
 import mlflow
-import mlflow.sklearn
 
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestRegressor
@@ -12,23 +13,23 @@ from sklearn.metrics import (
 )
 
 
-# Tracking MLflow menggunakan path relatif
-# Tidak menggunakan path Windows seperti D:\...
+# MLflow menggunakan path lokal relatif
 mlflow.set_tracking_uri(
     "file:./mlruns"
 )
-
 
 mlflow.set_experiment(
     "Wine Quality CI Training"
 )
 
 
+# Membaca dataset
 df = pd.read_csv(
     "winequality-red-preprocessing.csv"
 )
 
 
+# Memisahkan fitur dan target
 X = df.drop(
     columns=["quality"]
 )
@@ -36,6 +37,7 @@ X = df.drop(
 y = df["quality"]
 
 
+# Membagi dataset
 X_train, X_test, y_train, y_test = train_test_split(
     X,
     y,
@@ -46,20 +48,27 @@ X_train, X_test, y_train, y_test = train_test_split(
 
 with mlflow.start_run():
 
+    # Membuat model
     model = RandomForestRegressor(
         n_estimators=100,
         random_state=42
     )
 
+
+    # Training
     model.fit(
         X_train,
         y_train
     )
 
+
+    # Prediksi
     predictions = model.predict(
         X_test
     )
 
+
+    # Evaluasi
     rmse = mean_squared_error(
         y_test,
         predictions
@@ -75,11 +84,20 @@ with mlflow.start_run():
         predictions
     )
 
+
+    # Logging parameter
     mlflow.log_param(
         "model",
         "RandomForestRegressor"
     )
 
+    mlflow.log_param(
+        "n_estimators",
+        100
+    )
+
+
+    # Logging metrics
     mlflow.log_metric(
         "rmse",
         rmse
@@ -95,9 +113,23 @@ with mlflow.start_run():
         r2
     )
 
-    mlflow.sklearn.log_model(
+
+    # Simpan model ke file lokal
+    model_path = "model.pkl"
+
+    joblib.dump(
         model,
-        "model"
+        model_path
     )
 
+
+    # Upload model sebagai artifact MLflow
+    mlflow.log_artifact(
+        model_path
+    )
+
+
     print("Model training completed.")
+    print("RMSE:", rmse)
+    print("MAE:", mae)
+    print("R2 Score:", r2)
