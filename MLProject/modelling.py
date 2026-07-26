@@ -51,59 +51,59 @@ X_train, X_test, y_train, y_test = train_test_split(
 )
 
 
-with mlflow.start_run():
-
-    model = RandomForestRegressor(
-        n_estimators=100,
-        random_state=42
-    )
+model = RandomForestRegressor(
+    n_estimators=100,
+    random_state=42
+)
 
 
-    model.fit(
-        X_train,
-        y_train
-    )
+model.fit(
+    X_train,
+    y_train
+)
 
 
-    predictions = model.predict(
-        X_test
-    )
+predictions = model.predict(
+    X_test
+)
 
 
-    rmse = mean_squared_error(
-        y_test,
-        predictions
-    ) ** 0.5
-
-    mae = mean_absolute_error(
-        y_test,
-        predictions
-    )
-
-    r2 = r2_score(
-        y_test,
-        predictions
-    )
+rmse = mean_squared_error(
+    y_test,
+    predictions
+) ** 0.5
 
 
-    joblib.dump(
-        model,
-        "model.pkl"
-    )
+mae = mean_absolute_error(
+    y_test,
+    predictions
+)
 
 
-    print(
-        "Model training completed."
-    )
+r2 = r2_score(
+    y_test,
+    predictions
+)
 
-    print(
-        f"RMSE: {rmse}"
-    )
 
-    print(
-        f"MAE: {mae}"
-    )
+joblib.dump(
+    model,
+    "model.pkl"
+)
 
-    print(
-        f"R2 Score: {r2}"
-    )
+
+print(
+    "Model training completed."
+)
+
+print(
+    f"RMSE: {rmse}"
+)
+
+print(
+    f"MAE: {mae}"
+)
+
+print(
+    f"R2 Score: {r2}"
+)
