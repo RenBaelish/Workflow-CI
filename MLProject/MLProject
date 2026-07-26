@@ -1,4 +1,5 @@
-- name: Run MLflow Project
-  run: |
+name: bike-sharing-ml-project
 
-    mlflow run MLProject --env-manager=local
+entry_points:
+  main:
+    command: "python modelling.py"
