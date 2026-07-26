@@ -1,5 +1,4 @@
-name: wine-quality-ml-project
+- name: Run MLflow Project
+  run: |
 
-entry_points:
-  main:
-    command: "python modelling.py"
+    mlflow run MLProject --env-manager=local

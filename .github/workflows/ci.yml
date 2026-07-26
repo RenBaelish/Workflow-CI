@@ -20,21 +20,18 @@ jobs:
 
       - name: Setup Python
         uses: actions/setup-python@v5
-
         with:
           python-version: "3.12"
 
       - name: Install Dependencies
         run: |
-
           pip install mlflow==2.19.0
           pip install scikit-learn
           pip install pandas
           pip install numpy
+          pip install joblib
 
-      - name: Run MLProject
+      - name: Run MLflow Project
         run: |
-
           cd MLProject
-
-          python modelling.py
+          mlflow run . --env-manager=local
